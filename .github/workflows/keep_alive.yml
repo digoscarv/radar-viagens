@@ -1,0 +1,29 @@
+name: Supabase Keep-Alive
+
+on:
+  schedule:
+    # Executa toda segunda e quinta-feira às 10:00 UTC (~07:00 horário de Brasília)
+    - cron: '0 10 * * 1,4'
+  workflow_dispatch: # Permite rodar manualmente pelo botão no GitHub se desejar
+
+jobs:
+  ping-supabase:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do Repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Instalar Requests
+        run: pip install requests
+
+      - name: Executar Ping no Supabase
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+        run: python scripts/keep_alive.py
